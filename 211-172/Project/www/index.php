@@ -11,10 +11,12 @@ $isRouteFound = false;
 foreach($routes as $pattern=>$controllerAndAction){
     preg_match($pattern, $url, $matches);
     if (!empty($matches)){
+        // var_dump($matches);
         $isRouteFound = true;
         break;
     }     
 }
+unset($matches[0]);
 if ($isRouteFound){
     $controllerName = $controllerAndAction[0];
     $actionName = $controllerAndAction[1];
