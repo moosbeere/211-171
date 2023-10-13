@@ -1,30 +1,17 @@
 <?php
     namespace src\Models\Article;
     use src\Models\User\User;
+    use src\ActiveRecordEntity;
 
-    class Article{
-        private $id;
-        private $title;
-        private $text;
-        private $authorId;
+    class Article extends ActiveRecordEntity
+    {
+        protected $title;
+        protected $text;
+        protected $authorId;
  
-        public function __set($name, $value){
-            $propertyName = $this->underscoreToCamelcase($name);
-            $this->$propertyName = $value;
-        }
-
-        public function underscoreToCamelcase(string $name):string
-        {
-            return lcfirst(str_replace('_', '', ucwords($name, '_')));
-        }
-
-        public function getAuthorId(): User
+        public function getAuthorId()
         {
             return $this->authorId;
-        }
-        public function getId()
-        {
-            return $this->id;
         }
         public function getTitle():string
         {
@@ -33,6 +20,21 @@
         public function getText():string
         {
             return $this->text;
+        }
+
+        public function setTitle(string $title){
+            $this->title = $title;
+        }
+        public function setText(string $text){
+            $this->text = $text;
+        }
+        public function setAuthorId(string $authorId){
+            $this->authorId = $authorId;
+        }
+
+        public static function getTableName():string
+        {
+            return 'articles';
         }
     }
 ?>

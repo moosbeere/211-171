@@ -9,7 +9,7 @@
         
         public function __construct(){
             $this->view = new View(__DIR__.'/../../templates/');
-            $this->db = new Db;
+            $this->db = Db::getInstance();
         }
         
         public function main(){
