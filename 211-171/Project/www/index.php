@@ -15,27 +15,13 @@
           }
      }
     
-    
+     unset($matches[0]);
      $action = $controllerAndAction[1];
      $controllerName = $controllerAndAction[0];
      
      if ($isRouteFound){
           $controller = new $controllerName;
-          $controller->$action();
-     }
-     
-     // $pattern = '~^$~';
-     // preg_match($pattern, $url, $matches);
-     // if(!empty($matches)){
-     //      $controller->main();
-     //      return;
-     // }
-     // echo "Страница не найдена";
-     
-     // require('src/Models/Users/User.php');
-     // require('src/Models/Articles/Article.php');
-
-     // $user = new src\models\Users\User('Ivan');
-     // $article = new src\models\Articles\Article('title', 'text', $user);
-     // echo $article->getAuthor()->getName();    
+          $controller->$action(...$matches);
+     }else echo "Страница не найдена";
+   
 ?>
