@@ -6,6 +6,7 @@
 
      $isRouteFound = false;
      $url = $_GET['route'] ?? '';
+     // var_dump($url);
      $routes = require('../src/routes.php');
      foreach($routes as $pattern=>$controllerAndAction){
           preg_match($pattern, $url, $matches);

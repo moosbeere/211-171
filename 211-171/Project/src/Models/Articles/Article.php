@@ -1,20 +1,34 @@
 <?php
     namespace src\Models\Articles;
     use src\Models\Users\User;
+    use Services\Db;
+    use src\Models\ActiveRecordEntity;
 
-    class Article{
-        private $title;
-        private $text;
-        private $author;
 
-        public function __construct(string $title, string $text, User $author){
-            $this->text = $text;
-            $this->title = $title;
-            $this->author = $author;
+    class Article extends ActiveRecordEntity{
+       
+        protected $name;
+        protected $text;
+        protected $authorId;
+
+       
+        public function getName()
+        {
+            return $this->name;
+        }
+        public function getText()
+        {
+            return $this->text;
+        }     
+        public function  getAuthorId():User
+        {
+            $db = new Db();
+            $user = $db->query('SELECT * FROM `users` WHERE `id`=:id', [':id'=>$this->authorId], User::class);
+            return $user[0];
         }
 
-        public function getAuthor():User
-        {
-            return $this->author;
+        public static function getTableName(){
+            return 'articles';
         }
      }
+

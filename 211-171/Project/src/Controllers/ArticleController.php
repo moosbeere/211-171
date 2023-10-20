@@ -1,23 +1,26 @@
 <?php
 
 namespace src\Controllers;
-use Services\Db;
 use src\View\View;
+use src\Models\Articles\Article;
 
 class ArticleController{
-    private $db;
     private $view;
 
     public function __construct(){
-        $this->db = new Db;
         $this->view = new View(__DIR__.'/../../templates/');
 
     }
 
     public function index(){
-        $sql = 'SELECT * FROM `articles`';
-        $articles = $this->db->query($sql);
+        $articles = Article::findAll();
         $this->view->renderHtml('articles/view.php', ['articles'=>$articles]);
     }
-    
+
+    public function show ($id){
+        $sql = 'SELECT * FROM `articles` WHERE `id`=:id';
+        // $article = $this->db->query($sql, [':id' => $id], Article::class);
+        // var_dump($article);
+        $this->view->renderHtml('articles/show.php', ['article'=>$article[0]]);
+    }
 }
