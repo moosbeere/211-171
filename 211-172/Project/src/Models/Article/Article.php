@@ -9,9 +9,10 @@
         protected $text;
         protected $authorId;
  
-        public function getAuthorId()
+        public function getAuthorId():User
         {
-            return $this->authorId;
+            $user = User::getById($this->authorId);
+            return $user;
         }
         public function getTitle():string
         {

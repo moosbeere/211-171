@@ -20,7 +20,7 @@ abstract class ActiveRecordEntity{
             $propertyName = $property->getName();
             $propertiesName[$propertyNameToDbFormat] = $this->$propertyName;
         }
-        var_dump($propertiesName);
+        // var_dump($propertiesName);
         return $propertiesName;
     }
     public function underscoreToCamelcase(string $name):string
@@ -40,13 +40,12 @@ abstract class ActiveRecordEntity{
     public static function findAll():array
     {
         $db = Db::getInstance();
-        $sql = 'SELECT * FROM `'.static::getTableName().'`';
+        $sql = 'SELECT * FROM `'.static::getTableName().'` ORDER BY `id` DESC';
         $articles = $db->query($sql, [], static::class);
         return $articles;
     }
     public static function getById(int $id):static{
         $db = Db::getInstance();
-        var_dump($db);
         $sql = 'SELECT * FROM `'.static::getTableName().'` WHERE `id`=:id;';
         $article = $db->query($sql, [':id'=>$id], static::class);
         return $article[0];
@@ -56,9 +55,20 @@ abstract class ActiveRecordEntity{
         if ($mapped['id'] === NULL) $this->insert($mapped);
         else $this->update($mapped);
     }
-    public function update(){
-        
+    public function update(array $mappedProperties){
+        $db = Db::getInstance();
+        $key2param = [];
+        $param2value = [];
+        foreach($mappedProperties as $key=>$value){
+            $column = '`'.$key.'`';
+            $param=':'.$key;
+            $key2param[] = $column.' = '.$param;
+            $param2value[$param] = $value;
+        }
+        $sql = 'UPDATE `'.static::getTableName().'` SET '.implode(',', $key2param).' WHERE `id`='.$this->id;
+        $db->query($sql, $param2value);
     }   
+
     public function insert(array $mappedProperties){
         $filterMappedProperties = array_filter($mappedProperties);
         $db = Db::getInstance();
@@ -74,8 +84,15 @@ abstract class ActiveRecordEntity{
         $columnWithS = implode(',', $columns);
         $paramsWithS = implode(',', $paramsName);
         $sql = 'INSERT INTO `'.static::getTableName().'`('.$columnWithS.') VALUES ('.$paramsWithS.')';
-        $db->query($sql, $params2Values);
+        $res = $db->query($sql, $params2Values);
     }
+
+    public function delete(){
+        $db = Db::getInstance();
+        $sql = 'DELETE FROM `'.static::getTableName().'` WHERE `id`=:id';
+        $db->query($sql, [':id'=>$this->id]);
+    }
+
     abstract public static function getTableName():string;
 
 }
