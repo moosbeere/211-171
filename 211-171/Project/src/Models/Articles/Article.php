@@ -10,7 +10,15 @@
         protected $text;
         protected $authorId;
 
-
+        public function setName(string $name){
+            $this->name = $name;
+        }
+        public function setText(string $text){
+            $this->text = $text;
+        }
+        public function setAuthorId(int $authorId){
+            $this->authorId = $authorId;
+        }
         public function getName()
         {
             return $this->name;

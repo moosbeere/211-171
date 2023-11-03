@@ -19,6 +19,20 @@ class ArticleController{
         $this->view->renderHtml('articles/view.php', ['articles'=>$articles]);
     }
 
+    public function create(){
+        $users = User::findAll();
+        $this->view->renderHtml('articles/create.php', ['users'=>$users]);
+    }
+
+    public function store(){
+        $article = new Article;
+        $article->setName($_POST['name']);
+        $article->setText($_POST['text']);
+        $article->setAuthorId($_POST['author']);
+        $article ->save();
+        return header('Location: http://localhost/Frame-211/211-171/Project/www');
+    }
+
     public function show ($id){
         $article = Article::getById($id);
         $comments = Comment::where($article->getId(), 'article_id');
@@ -28,12 +42,22 @@ class ArticleController{
 
     public function update(int $id){
         $article = Article::getById($id);
-        $article -> save();
+        $article->setName($_POST['name']);
+        $article->setText($_POST['text']);
+        $article->setAuthorId($_POST['author']);
+        $article ->save();
+        $this->show($id);
     }
 
     public function edit(int $id){
         $users = User::findAll();
         $article = Article::getById($id);
         $this->view->renderHtml('articles/edit.php', ['article'=>$article, 'users'=>$users]);
+    }
+
+    public function delete(int $id){
+        $article = Article::getById($id);
+        $article->delete();
+        return header('Location: http://localhost/Frame-211/211-171/Project/www');
     }
 }

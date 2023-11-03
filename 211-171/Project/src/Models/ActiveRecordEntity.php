@@ -47,18 +47,56 @@ abstract class ActiveRecordEntity{
     {
         $reflector = new \ReflectionObject($this);
         $prorerties = $reflector->getProperties();
+        $proprtiesName = [];
         foreach($prorerties as $property){
-            $mapped [] = $this->camelcaseToUnderScore($property->getName());
+            $propertyName = $property->getName();
+            $propertyNameToDbFormat= $this->camelcaseToUnderScore($propertyName);
+            $proprtiesName[$propertyNameToDbFormat] = $this->$propertyName;
         }
-        return $mapped;
+        return $proprtiesName;
     }
     private function camelcaseToUnderscore(string $name){
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
     }
 
     public function save(){
-        $proprtiesName = $this->mapToDbProperties();
-        var_dump($proprtiesName);
+        $propertiesName = $this->mapToDbProperties();
+        if ($propertiesName['id'] === null) $this->insert($propertiesName);
+        else $this->update($propertiesName);
+    }
+
+    public function insert($propertiesName){
+        $db=Db::getInstance();
+        $name = [];
+        $params = [];
+        $paramToValue = [];
+        foreach($propertiesName as $key=>$value){
+            $param = ':'.$key;
+            $name [] = '`'.$key.'`';
+            $params [] = $param;
+            $paramToValue[$param] = $value;
+        }
+        $sql = 'INSERT INTO `'.static::getTableName().'` ('.implode(',', $name).') 
+                VALUES ('.implode(',', $params).')';
+        $db->query($sql, $paramToValue, static::class);
+    }
+
+    public function update($propertiesName){
+        $db=Db::getInstance();
+        $keyToParam = [];
+        $paramToValue = [];
+        foreach($propertiesName as $key=>$value){
+            $param = ':'.$key;
+            $keyToParam [] = '`'.$key.'`='.$param;
+            $paramToValue[$param] = $value;
+        }
+        $sql = 'UPDATE '.static::getTableName().' SET '.implode(',', $keyToParam).' WHERE `id`='.$this->id;
+        $db->query($sql, $paramToValue, static::class);
+    }
+    public function delete(){
+        $db = Db::getInstance();
+        $sql = 'DELETE FROM `'.static::getTableName().'` WHERE `id`=:id';
+        $db->query($sql, [':id'=>$this->id], static::class);
     }
     abstract static function getTableName();
 }

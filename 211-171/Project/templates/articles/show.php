@@ -7,7 +7,7 @@
     <p class="card-text"><?=$article->getText();?></p>
     <p class="card-text"><?=$article->getAuthorId()->getNickname();?></p>
     <a href="/Frame-211/211-171/Project/www/article/edit/<?=$article->getId();?>" class="card-link">Update article</a>
-    <a href="#" class="card-link">Delete article</a>
+    <a href="/Frame-211/211-171/Project/www/article/delete/<?=$article->getId();?>" class="card-link">Delete article</a>
   </div>
 </div>
 <h3>Comment</h3>
