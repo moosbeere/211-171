@@ -2,7 +2,7 @@
     namespace src\Models\Users;
     use src\Models\ActiveRecordEntity;
 
-    class User extends ActiveRecordEntity;{
+    class User extends ActiveRecordEntity{
         protected $nickname;
         protected $email;
         protected $isConfirmed;

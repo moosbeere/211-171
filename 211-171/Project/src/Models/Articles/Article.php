@@ -6,12 +6,11 @@
 
 
     class Article extends ActiveRecordEntity{
-       
         protected $name;
         protected $text;
         protected $authorId;
 
-       
+
         public function getName()
         {
             return $this->name;
@@ -22,7 +21,7 @@
         }     
         public function  getAuthorId():User
         {
-            $db = new Db();
+            $db = Db::getInstance();
             $user = $db->query('SELECT * FROM `users` WHERE `id`=:id', [':id'=>$this->authorId], User::class);
             return $user[0];
         }

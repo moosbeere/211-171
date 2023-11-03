@@ -3,6 +3,8 @@
 namespace src\Controllers;
 use src\View\View;
 use src\Models\Articles\Article;
+use src\Models\Comments\Comment;
+use src\Models\Users\User;
 
 class ArticleController{
     private $view;
@@ -18,9 +20,20 @@ class ArticleController{
     }
 
     public function show ($id){
-        $sql = 'SELECT * FROM `articles` WHERE `id`=:id';
-        // $article = $this->db->query($sql, [':id' => $id], Article::class);
-        // var_dump($article);
-        $this->view->renderHtml('articles/show.php', ['article'=>$article[0]]);
+        $article = Article::getById($id);
+        $comments = Comment::where($article->getId(), 'article_id');
+        // var_dump($comments);
+        $this->view->renderHtml('articles/show.php', ['article'=>$article, 'comments'=>$comments]);
+    }
+
+    public function update(int $id){
+        $article = Article::getById($id);
+        $article -> save();
+    }
+
+    public function edit(int $id){
+        $users = User::findAll();
+        $article = Article::getById($id);
+        $this->view->renderHtml('articles/edit.php', ['article'=>$article, 'users'=>$users]);
     }
 }
