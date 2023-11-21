@@ -50,6 +50,14 @@ abstract class ActiveRecordEntity{
         $article = $db->query($sql, [':id'=>$id], static::class);
         return $article[0];
     }
+    public static function findByColumn(string $columnName, $value):?array
+    {
+        $db = Db::getInstance();
+        $sql = 'SELECT * FROM `'.static::getTableName().'` WHERE `'.$columnName.'`=:value;';
+        $entities = $db->query($sql, [':value'=>$value], static::class);
+        return $entities;
+    }
+
     public function save(){
         $mapped = $this->mapPropertiesToDbFormat();
         if ($mapped['id'] === NULL) $this->insert($mapped);

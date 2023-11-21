@@ -58,6 +58,7 @@ class ArticleController{
     public function delete(int $id){
         $article = Article::getById($id);
         $article->delete();
+        console_log($id);
         $this->index();
     }
     
